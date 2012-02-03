@@ -231,10 +231,6 @@ namespace api.types
         payload += "content=" + HttpUtility.UrlEncode(content);
       }
 
-      Console.WriteLine(_id);
-      Console.WriteLine(payload);
-      Console.WriteLine("drops/" + _id.ToString());
-
       return JsonConvert.DeserializeObject<bool>(_http.PUT("drops/" + _id.ToString(), payload));
     }
 
