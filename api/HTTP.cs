@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Net;
-using System.Web;
 using Newtonsoft.Json;
 
-namespace api
+namespace fag.api
 {
+  public class Parameters
+    : Dictionary<string, object> { }
+
   public class HTTP
   {
     private CookieContainer _cookies = null;
@@ -21,20 +23,22 @@ namespace api
       _csrf = JsonConvert.DeserializeObject<string>(GET("csrf"));
     }
 
-    public string Request(string meth,
-      string url,
-      string payload)
+    private string jsonize(Parameters dict)
+    {
+      dict.Add("_csrf", _csrf);
+      return JsonConvert.SerializeObject(dict);
+    }
+
+    public string Request(string meth, string url, Parameters pars = null)
     {
       HttpWebRequest request = (HttpWebRequest)WebRequest.Create(BASE + url);
       request.CookieContainer = _cookies;
       request.Method = meth;
-      request.ContentType = "application/x-www-form-urlencoded";
+      request.ContentType = "application/json";
 
-      if (payload != null)
+      if (pars != null)
       {
-        if (payload.Length != 0)
-          payload += "&";
-        payload += "_csrf=" + HttpUtility.UrlEncode(_csrf);
+        string payload = jsonize(pars);
         request.ContentLength = payload.Length;
 
         using (var requestStream = request.GetRequestStream())
@@ -57,8 +61,7 @@ namespace api
       return result;
     }
 
-    public string Request(string meth,
-      string url)
+    public string Request(string meth, string url)
     {
       return Request(meth, url, null);
     }
@@ -68,14 +71,14 @@ namespace api
       return Request("GET", url);
     }
 
-    public string POST(string url, string payload)
+    public string POST(string url, Parameters pars)
     {
-      return Request("POST", url, payload);
+      return Request("POST", url, pars);
     }
 
-    public string PUT(string url, string payload)
+    public string PUT(string url, Parameters pars)
     {
-      return Request("PUT", url, payload);
+      return Request("PUT", url, pars);
     }
 
     public string DELETE(string url)
@@ -88,9 +91,12 @@ namespace api
       _csrf = JsonConvert.DeserializeObject<string>(GET("csrf/renew"));
     }
 
-    public bool isAuth()
+    public bool isAuth
     {
-      return JsonConvert.DeserializeObject<bool>(GET("auth"));
+      get
+      {
+        return JsonConvert.DeserializeObject<bool>(GET("auth"));
+      }
     }
   }
 }

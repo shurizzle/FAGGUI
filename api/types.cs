@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Web;
+using System.Xml;
 
-namespace api.types
+namespace fag.api.types
 {
   public class User
   {
@@ -52,8 +52,7 @@ namespace api.types
 
     public void ChangePassword(string password)
     {
-      string payload = "password=" + HttpUtility.UrlEncode(password);
-      _http.PUT("users/" + _id.ToString() + "/password", payload);
+      _http.PUT("users/" + _id.ToString() + "/password", new Parameters() { {"password", password} });
     }
 
     public Dictionary<string, bool> Powers
@@ -71,19 +70,19 @@ namespace api.types
 
     public void setCan(string what)
     {
-      string payload = HttpUtility.UrlEncode(what) + "=";
-      _http.PUT("users/" + _id.ToString() + "/can", payload);
+      _http.PUT("users/" + _id.ToString() + "/can", new Parameters() { {what, ""} });
     }
 
     public void setCan(string[] what)
     {
-      string payload = "";
+      Parameters pars = new Parameters();
+
       for (int i = 0; i < what.Length; i++)
       {
-        payload += HttpUtility.UrlEncode(what[i]) + "=";
+        pars[what[i]] = "";
       }
 
-      _http.PUT("users/" + _id.ToString() + "/can", payload);
+      _http.PUT("users/" + _id.ToString() + "/can", pars);
     }
 
     public bool Cannot(string what)
@@ -93,19 +92,18 @@ namespace api.types
 
     public void setCannot(string what)
     {
-      string payload = HttpUtility.UrlEncode(what) + "=";
-      _http.PUT("users/" + _id.ToString() + "/cannot", payload);
+      _http.PUT("users/" + _id.ToString() + "/cannot", new Parameters() { {what, ""} });
     }
 
     public void setCannot(string[] what)
     {
-      string payload = "";
+      Parameters pars = new Parameters();
       for (int i = 0; i < what.Length; i++)
       {
-        payload += HttpUtility.UrlEncode(what[i]) + "=";
+        pars[what[i]] = "";
       }
 
-      _http.PUT("users/" + _id.ToString() + "/cannot", payload);
+      _http.PUT("users/" + _id.ToString() + "/cannot", pars);
     }
 
     static public User from_json(HTTP http, JObject o)
@@ -125,8 +123,8 @@ namespace api.types
     private int _id = 0;
     private User _author = null;
     private string _content = null;
-    private string _created_at = null;
-    private string _updated_at = null;
+    private DateTime _created_at;
+    private DateTime _updated_at;
 
     public Drop(HTTP http, int id)
     {
@@ -135,6 +133,9 @@ namespace api.types
     }
 
     public Drop(HTTP http, int id, User author, string content, string created_at, string updated_at)
+      : this(http, id, author, content, XmlConvert.ToDateTime(created_at, XmlDateTimeSerializationMode.RoundtripKind), XmlConvert.ToDateTime(updated_at, XmlDateTimeSerializationMode.RoundtripKind)) { }
+
+    public Drop(HTTP http, int id, User author, string content, DateTime created_at, DateTime updated_at)
       : this(http, id)
     {
       _author = author;
@@ -147,9 +148,9 @@ namespace api.types
     {
       JObject o = JObject.Parse(_http.GET("drops/" + _id.ToString()));
       _author = User.from_json(_http, (JObject)o["author"]);
-      _content = (string)o["content"];
-      _created_at = (string)o["created_at"];
-      _created_at = (string)o["updated_at"];
+      _content = o.Value<string>("content");
+      _created_at = XmlConvert.ToDateTime(o.Value<string>("created_at"), XmlDateTimeSerializationMode.RoundtripKind);
+      _created_at = XmlConvert.ToDateTime(o.Value<string>("updated_at"), XmlDateTimeSerializationMode.RoundtripKind);
     }
 
     public int ID
@@ -180,7 +181,7 @@ namespace api.types
       }
     }
 
-    public string CreatedAt
+    public DateTime CreatedAt
     {
       get
       {
@@ -190,7 +191,7 @@ namespace api.types
       }
     }
 
-    public string UpdatedAt
+    public DateTime UpdatedAt
     {
       get
       {
@@ -205,43 +206,31 @@ namespace api.types
       if (title == null && author_name == null && author_id < 0 && content == null)
         return false;
 
-      string payload = "";
+      Parameters pars = new Parameters();
 
       if (title != null)
-        payload += "title=" + HttpUtility.UrlEncode(title);
+        pars["title"] = title;
 
       if (author_name != null)
-      {
-        if (payload.Length != 0)
-          payload += "&";
-        payload += "author_name=" + HttpUtility.UrlEncode(author_name);
-      }
+        pars["author_name"] = author_name;
 
       if (author_id > -1)
-      {
-        if (payload.Length != 0)
-          payload += "&";
-        payload += "author_id=" + author_id.ToString();
-      }
+        pars["author_id"] = author_id;
 
       if (content != null)
-      {
-        if (payload.Length != 0)
-          payload += "&";
-        payload += "content=" + HttpUtility.UrlEncode(content);
-      }
+        pars["content"] = content;
 
-      return JsonConvert.DeserializeObject<bool>(_http.PUT("drops/" + _id.ToString(), payload));
+      return JsonConvert.DeserializeObject<bool>(_http.PUT("drops/" + _id.ToString(), pars));
     }
 
     static public Drop from_json(HTTP http, JObject o)
     {
       return new Drop(http,
-        (int)o["id"],
-        User.from_json(http, (JObject)o["author"]),
-        (string)o["content"],
-        (string)o["created_at"],
-        (string)o["updated_at"]);
+        o.Value<int>("id"),
+        User.from_json(http, o.Value<JObject>("author")),
+        o.Value<string>("content"),
+        o.Value<string>("created_at"),
+        o.Value<string>("updated_at"));
     }
 
     static public Drop from_json(HTTP http, string json)
@@ -305,8 +294,8 @@ namespace api.types
     private string[] _tags = null;
     private User _author = null;
     private Drop[] _drops = null;
-    private string _created_at = null;
-    private string _updated_at = null;
+    private DateTime _created_at;
+    private DateTime _updated_at;
 
     static public Flow from_json(HTTP http, JObject o)
     {
@@ -332,6 +321,9 @@ namespace api.types
     }
 
     public Flow(HTTP http, int id, string title, string[] tags, User author, Drop[] drops, string created_at, string updated_at)
+      : this(http, id, title, tags, author, drops, XmlConvert.ToDateTime(created_at, XmlDateTimeSerializationMode.RoundtripKind), XmlConvert.ToDateTime(updated_at, XmlDateTimeSerializationMode.RoundtripKind)) { }
+
+    public Flow(HTTP http, int id, string title, string[] tags, User author, Drop[] drops, DateTime created_at, DateTime update_at)
       : this(http, id)
     {
       _title = title;
@@ -339,18 +331,18 @@ namespace api.types
       _author = author;
       _drops = drops;
       _created_at = created_at;
-      _updated_at = updated_at;
+      _updated_at = update_at;
     }
 
     private void populate()
     {
       JObject o = JObject.Parse(_http.GET("flows/" + _id.ToString()));
-      _title = (string)o["title"];
+      _title = o.Value<string>("title");
       _tags = ((JArray)o["tags"]).Values<string>().ToArray<string>();
-      _author = User.from_json(_http, (JObject)o["author"]);
-      _drops = api.types.Drops.from_id_array(_http, (JArray)o["drops"]);
-      _created_at = (string)o["created_at"];
-      _created_at = (string)o["updated_at"];
+      _author = User.from_json(_http, o.Value<JObject>("author"));
+      _drops = api.types.Drops.from_id_array(_http, o.Value<JArray>("drops"));
+      _created_at = XmlConvert.ToDateTime(o.Value<string>("created_at"), XmlDateTimeSerializationMode.RoundtripKind);
+      _created_at = XmlConvert.ToDateTime(o.Value<string>("updated_at"), XmlDateTimeSerializationMode.RoundtripKind);
     }
 
     public int ID
@@ -401,7 +393,7 @@ namespace api.types
       }
     }
 
-    public string CreatedAt
+    public DateTime CreatedAt
     {
       get
       {
@@ -411,7 +403,7 @@ namespace api.types
       }
     }
 
-    public string UpdatedAt
+    public DateTime UpdatedAt
     {
       get
       {
@@ -433,19 +425,19 @@ namespace api.types
 
     public void AddDrop(string name, string title, string content)
     {
-      string payload = "name=" + HttpUtility.UrlEncode(name) +
-        "&title=" + HttpUtility.UrlEncode(title) +
-        "&content=" + HttpUtility.UrlEncode(content);
-
-      _http.POST("flows/" + _id.ToString() + "/drops", payload);
+      _http.POST("flows/" + _id.ToString() + "/drops", new Parameters() {
+        {"name", name},
+        {"title", title},
+        {"content", content}
+      });
     }
 
     public void AddDrop(string title, string content)
     {
-      string payload = "title=" + HttpUtility.UrlEncode(title) +
-        "&content=" + HttpUtility.UrlEncode(content);
-
-      _http.POST("flows/" + _id.ToString() + "/drops", payload);
+      _http.POST("flows/" + _id.ToString() + "/drops", new Parameters() {
+        {"title", title},
+        {"content", content}
+      });
     }
   }
 

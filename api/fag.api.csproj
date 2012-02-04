@@ -8,8 +8,8 @@
     <ProjectGuid>{B0B7DEBB-CF82-42E0-9938-52397BC534DB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>api</RootNamespace>
-    <AssemblyName>api</AssemblyName>
+    <RootNamespace>fag.api</RootNamespace>
+    <AssemblyName>fag.api</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\fag\</SolutionDir>

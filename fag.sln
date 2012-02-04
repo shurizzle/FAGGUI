@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{87DEF4
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api", "api\api.csproj", "{B0B7DEBB-CF82-42E0-9938-52397BC534DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fag.api", "api\fag.api.csproj", "{B0B7DEBB-CF82-42E0-9938-52397BC534DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{15957FAD-0E52-46FE-9376-54534432C4BB}"
 	ProjectSection(ProjectDependencies) = postProject

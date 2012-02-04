@@ -51,9 +51,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\api\api.csproj">
+    <ProjectReference Include="..\api\fag.api.csproj">
       <Project>{B0B7DEBB-CF82-42E0-9938-52397BC534DB}</Project>
-      <Name>api</Name>
+      <Name>fag.api</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

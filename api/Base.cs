@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 using Newtonsoft.Json;
-using api.types;
+using System.Web;
+using fag.api.types;
 
-namespace api
+namespace fag.api
 {
   public class Base
   {
@@ -32,25 +32,28 @@ namespace api
 
     public void Login(string name, string password)
     {
-      string payload = "name=" + HttpUtility.UrlEncode(name) +
-        "&password=" + HttpUtility.UrlEncode(password);
-      int uid = JsonConvert.DeserializeObject<int>(_http.POST("auth", payload));
+      int uid = JsonConvert.DeserializeObject<int>(_http.POST("auth", new Parameters() {
+        {"name", name},
+        {"password", password}
+      }));
       _user = new User(_http, uid);
     }
 
     public void Login(int id, string password)
     {
-      string payload = "id=" + id.ToString() +
-        "&password=" + HttpUtility.UrlEncode(password);
-      int uid = JsonConvert.DeserializeObject<int>(_http.POST("auth", payload));
+      int uid = JsonConvert.DeserializeObject<int>(_http.POST("auth", new Parameters() {
+        {"id", id},
+        {"password", password}
+      }));
       _user = new User(_http, uid);
     }
 
     public void Register(string name, string password)
     {
-      string payload = "name=" + HttpUtility.UrlEncode(name) +
-        "&password=" + HttpUtility.UrlEncode(password);
-      _http.POST("users", payload);
+      _http.POST("users", new Parameters() {
+        {"name", name},
+        {"password", password}
+      });
     }
 
     public User GetUser(int id)
@@ -64,6 +67,11 @@ namespace api
       {
         return _user;
       }
+    }
+
+    public Flow GetFlow(int id)
+    {
+      return new Flow(_http, id);
     }
 
     public Flow[] GetFlows(bool sort = true)
@@ -112,26 +120,31 @@ namespace api
 
     public Flow StartFlow(string name, string title, string[] tags, string content)
     {
-      string _tags = JsonConvert.SerializeObject(tags);
-      string payload = "name=" + HttpUtility.UrlEncode(name) +
-        "&title=" + HttpUtility.UrlEncode(title) +
-        "&tags=" + HttpUtility.UrlEncode(_tags) +
-        "&content=" + HttpUtility.UrlEncode(content);
-      return Flow.from_json(_http, _http.POST("flows", payload));
+      return Flow.from_json(_http, _http.POST("flows", new Parameters() {
+        {"name", name},
+        {"title", title},
+        {"tags", tags},
+        {"content", content}
+      }));
     }
 
     public Flow StartFlow(string title, string[] tags, string content)
     {
-      string _tags = JsonConvert.SerializeObject(tags);
-      string payload = "title=" + HttpUtility.UrlEncode(title) +
-        "&tags=" + HttpUtility.UrlEncode(_tags) +
-        "&content=" + HttpUtility.UrlEncode(content);
-      return Flow.from_json(_http, _http.POST("flows", payload));
+      return Flow.from_json(_http, _http.POST("flows", new Parameters() {
+        {"title", title},
+        {"tags", tags},
+        {"content", content}
+      }));
     }
 
     public void DeleteFlow(int id)
     {
       _http.DELETE("flows/" + id.ToString());
+    }
+
+    public Drop GetDrop(int id)
+    {
+      return new Drop(_http, id);
     }
 
     public void DeleteDrop(int id)
