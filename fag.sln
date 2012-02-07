@@ -1,11 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fag", "fag\fag.csproj", "{B10CC9DE-CAE8-49EB-BAA6-90B6480D0703}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B0B7DEBB-CF82-42E0-9938-52397BC534DB} = {B0B7DEBB-CF82-42E0-9938-52397BC534DB}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{87DEF471-A9E0-4D30-A3AF-19F1348E108C}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.exe = .nuget\NuGet.exe
@@ -33,15 +28,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B10CC9DE-CAE8-49EB-BAA6-90B6480D0703}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{B10CC9DE-CAE8-49EB-BAA6-90B6480D0703}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{B10CC9DE-CAE8-49EB-BAA6-90B6480D0703}.Debug|x86.ActiveCfg = Debug|x86
-		{B10CC9DE-CAE8-49EB-BAA6-90B6480D0703}.Debug|x86.Build.0 = Debug|x86
-		{B10CC9DE-CAE8-49EB-BAA6-90B6480D0703}.Release|Any CPU.ActiveCfg = Release|x86
-		{B10CC9DE-CAE8-49EB-BAA6-90B6480D0703}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{B10CC9DE-CAE8-49EB-BAA6-90B6480D0703}.Release|Mixed Platforms.Build.0 = Release|x86
-		{B10CC9DE-CAE8-49EB-BAA6-90B6480D0703}.Release|x86.ActiveCfg = Release|x86
-		{B10CC9DE-CAE8-49EB-BAA6-90B6480D0703}.Release|x86.Build.0 = Release|x86
 		{B0B7DEBB-CF82-42E0-9938-52397BC534DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0B7DEBB-CF82-42E0-9938-52397BC534DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0B7DEBB-CF82-42E0-9938-52397BC534DB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

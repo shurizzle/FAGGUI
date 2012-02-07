@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Text.RegularExpressions;
 
 namespace MarkRight
 {
@@ -30,6 +31,13 @@ namespace MarkRight
       {
         _alignment = value;
         paragraph.TextAlignment = value;
+      }
+    }
+    public Paragraph Paragraph
+    {
+      get
+      {
+        return paragraph;
       }
     }
 
@@ -143,23 +151,44 @@ namespace MarkRight
       Hyperlink link = new Hyperlink(part);
       link.NavigateUri = new Uri(linkUrl);
       link.Foreground = new SolidColorBrush(Colors.Blue);
+      link.RequestNavigate += new System.Windows.Navigation.RequestNavigateEventHandler(link_RequestNavigate);
+      return link;
+    }
+
+    public Hyperlink CreateLink(string name, System.Windows.Navigation.RequestNavigateEventHandler handler)
+    {
+      Run part = CreatePart(name);
+      part.Foreground = new SolidColorBrush(Colors.Blue);
+      part.Cursor = Cursors.Hand;
+      Hyperlink link = new Hyperlink(part);
+      link.Foreground = new SolidColorBrush(Colors.Blue);
+      link.RequestNavigate += handler;
       return link;
     }
 
     public Hyperlink AddLink(string name, string linkUrl)
     {
       Hyperlink link = CreateLink(name, linkUrl);
-      link.RequestNavigate += new System.Windows.Navigation.RequestNavigateEventHandler(link_RequestNavigate);
       paragraph.Inlines.Add(link);
       return link;
+    }
+
+    public Hyperlink AddLink(string name, System.Windows.Navigation.RequestNavigateEventHandler handler)
+    {
+      Hyperlink link = CreateLink(name, handler);
+      paragraph.Inlines.Add(link);
+      return link;
+    }
+
+    public Hyperlink AddLink(string linkUrl)
+    {
+      return AddLink(linkUrl, linkUrl);
     }
 
     private void _AddText(string text, bool bold, bool italic)
     {
       if (text.Length < 1)
         return;
-
-      MessageBox.Show(text);
 
       if (bold)
         if (italic)
@@ -188,11 +217,21 @@ namespace MarkRight
       }
     }
 
+    static private Regex URIRe = new Regex(@"(?<!\[\s*)((http[s]?|ftp):\/\/)([^:\/\s]+)(:[0-9]*)?((?:\/[\w:;%\.\-]*)+)?(\?(([\w:;%\.\-\[\]]+)=([\w:;%\.\-\[\]]*)))?(#(\S+))?", RegexOptions.IgnoreCase);
+
+    static string _TransformLink(Match match)
+    {
+      return "[" + match.Value + "]";
+    }
+
     public void AddMarkUp(string text)
     {
       StringBuilder sb = new StringBuilder();
       bool bold = false;
       bool italic = false;
+
+
+      text = URIRe.Replace(text, new MatchEvaluator(_TransformLink));
 
       for (int i = 0; i < text.Length; i++)
       {
@@ -243,9 +282,34 @@ namespace MarkRight
             else
               sb.Append('>');
             break;
+          case '[':
+            AddText(sb.ToString(), bold, italic);
+            sb.Clear();
+
+            for (; i < text.Length && text[i] == ' '; i++) ;
+            int start = ++i;
+            for (; i < text.Length && text[i] != ']'; i++) ;
+            string linkUrl = text.Substring(start, i - start);
+            start = i;
+            for (; i < text.Length && text[i] == ' '; i++) ;
+
+            if (text[++i] == '(')
+            {
+              for (; i < text.Length && text[i] == ' '; i++) ;
+              start = ++i;
+              for (; i < text.Length && text[i] != ')'; i++) ;
+              string name = text.Substring(start, i - start);
+              AddLink(name, linkUrl);
+            }
+            else
+            {
+              i = start;
+              AddLink(linkUrl, linkUrl);
+            }
+            break;
           case '\\':
             int next = i + 1;
-            if (next < text.Length && (text[next] == '*' || text[next] == '_'))
+            if (next < text.Length && (text[next] == '*' || text[next] == '_' || text[next] == '['))
               sb.Append(text[++i]);
             else
               sb.Append('\\');
