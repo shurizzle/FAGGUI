@@ -23,6 +23,7 @@ namespace FAGGUI
     public MainWindow()
     {
       InitializeComponent();
+      //stackPanel1.MouseWheel += delegate { };
       stackPanel1.AddMarkedUpText("*BOLD* http://google.it/?laborra=#w/e [http://google.it/](LA BORRA) _ITALIC_ _*BOTH*_\n\n>BORRA\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSONO IL RAGAZZO DEL RITORNELLO");
     }
   }

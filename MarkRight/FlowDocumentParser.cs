@@ -185,7 +185,7 @@ namespace MarkRight
       return AddLink(linkUrl, linkUrl);
     }
 
-    private void _AddText(string text, bool bold, bool italic)
+    private void AddText(string text, bool bold, bool italic)
     {
       if (text.Length < 1)
         return;
@@ -199,22 +199,6 @@ namespace MarkRight
         AddItalic(text);
       else
         AddPart(text);
-    }
-
-    private void AddText(string text, bool bold, bool italic)
-    {
-      if (text.Length < 1)
-        return;
-
-      string[] parts = text.Split(new char[] {'\n'});
-
-      _AddText(parts[0], bold, italic);
-
-      for (int i = 1; i < parts.Length; i++)
-      {
-        AddNewLine();
-        _AddText(parts[0], bold, italic);
-      }
     }
 
     static private Regex URIRe = new Regex(@"(?<!\[\s*)((http[s]?|ftp):\/\/)([^:\/\s]+)(:[0-9]*)?((?:\/[\w:;%\.\-]*)+)?(\?(([\w:;%\.\-\[\]]+)=([\w:;%\.\-\[\]]*)))?(#(\S+))?", RegexOptions.IgnoreCase);
