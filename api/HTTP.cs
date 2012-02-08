@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Net;
+using System.Web;
 using Newtonsoft.Json;
 
 namespace fag.api
@@ -25,13 +26,15 @@ namespace fag.api
 
     private string jsonize(Parameters dict)
     {
-      dict.Add("_csrf", _csrf);
       return JsonConvert.SerializeObject(dict);
     }
 
     public string Request(string meth, string url, Parameters pars = null)
     {
-      HttpWebRequest request = (HttpWebRequest)WebRequest.Create(BASE + url);
+      url = BASE + url;
+      if (!meth.Equals("GET"))
+        url += "?csrf=" + HttpUtility.UrlEncode(_csrf);
+      HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
       request.CookieContainer = _cookies;
       request.Method = meth;
       request.ContentType = "application/json";

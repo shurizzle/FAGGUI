@@ -25,7 +25,7 @@ namespace FAGGUI
     {
       Base api = new Base();
       InitializeComponent();
-      stackPanel1.AddDrops(api.GetFlow(1).GetDrops(1));
+      //stackPanel1.AddDrops(api.GetFlow(1).GetDrops(1));
     }
   }
 }
