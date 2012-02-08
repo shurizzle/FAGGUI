@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MarkRight.Helpers;
+using fag.api;
 
 namespace FAGGUI
 {
@@ -22,9 +23,9 @@ namespace FAGGUI
   {
     public MainWindow()
     {
+      Base api = new Base();
       InitializeComponent();
-      //stackPanel1.MouseWheel += delegate { };
-      stackPanel1.AddMarkedUpText("*BOLD* http://google.it/?laborra=#w/e [http://google.it/](LA BORRA) _ITALIC_ _*BOTH*_\n\n>BORRA\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSONO IL RAGAZZO DEL RITORNELLO");
+      stackPanel1.AddDrops(api.GetFlow(1).Drops);
     }
   }
 }
