@@ -25,7 +25,8 @@ namespace FAGGUI
     {
       Base api = new Base();
       InitializeComponent();
-      stackPanel1.AddDrops(api.GetFlow(1).Drops);
+      scrollViewer1.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+      stackPanel1.AddDrops(api.GetFlow(1).GetDrops(1));
     }
   }
 }

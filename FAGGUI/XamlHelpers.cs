@@ -35,19 +35,21 @@ namespace FAGGUI
       border.BorderThickness = new Thickness(0, 0, 0, 10);
       border.CornerRadius = new CornerRadius(10);
       border.Padding = new Thickness(3);
-      FlowDocumentScrollViewer fdsv = new FlowDocumentScrollViewer();
       FlowDocumentParser fdp = new FlowDocumentParser();
       fdp.TextAlignment = TextAlignment.Right;
       fdp.AddBold(drop.Author.Name + " at " + 
         String.Format("{0:dd/MM/yyyy HH:mm}", drop.UpdatedAt));
       fdp = new FlowDocumentParser(fdp.Doc);
       fdp.AddMarkUp(drop.Content);
-      fdsv.Document = fdp.Doc;
-      fdsv.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-      fdsv.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+      fdp.Doc.PreviewMouseWheel += Bubbler;
       border.Background = new SolidColorBrush(Colors.YellowGreen);
+      FlowDocumentScrollViewer fdsv = new FlowDocumentScrollViewer()
+      {
+        HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+        Document = fdp.Doc,
+        VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+      };
       border.Child = fdsv;
-      fdsv.Document.PreviewMouseWheel += Bubbler;
       fdsv.PreviewMouseWheel += Bubbler;
       fdsv.SizeChanged += Resizer;
       sp.Children.Add(border);
