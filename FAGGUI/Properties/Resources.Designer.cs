@@ -59,5 +59,12 @@ namespace FAGGUI.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Bitmap LoaderImage {
+            get {
+                object obj = ResourceManager.GetObject("LoaderImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
