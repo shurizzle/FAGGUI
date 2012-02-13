@@ -16,12 +16,22 @@ namespace fag.api
   {
     private CookieContainer _cookies = null;
     private string _csrf = null;
-    private static string BASE = "http://10.0.2.2:3000/1/";
+    private string BASE;
 
-    public HTTP()
+    public HTTP(string _base = "http://10.0.2.2:3000/1/")
     {
+      BASE = _base;
       _cookies = new CookieContainer();
-      _csrf = JsonConvert.DeserializeObject<string>(GET("csrf"));
+    }
+
+    public string Csrf
+    {
+      get
+      {
+        if (_csrf == null)
+          _csrf = JsonConvert.DeserializeObject<string>(GET("csrf"));
+        return _csrf;
+      }
     }
 
     private string jsonize(Parameters dict)
@@ -33,7 +43,7 @@ namespace fag.api
     {
       url = BASE + url;
       if (!meth.Equals("GET"))
-        url += "?csrf=" + HttpUtility.UrlEncode(_csrf);
+        url += "?csrf=" + HttpUtility.UrlEncode(Csrf);
       HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
       request.CookieContainer = _cookies;
       request.Method = meth;

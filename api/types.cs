@@ -8,10 +8,64 @@ using System.Xml;
 
 namespace fag.api.types
 {
-  public class User
+  public abstract class Metadatable
   {
-    private HTTP _http = null;
-    private int _id = 0;
+    private string _model_name;
+    protected int _id = 0;
+    protected JObject _metadata;
+    protected HTTP _http;
+
+    public JObject Metadata
+    {
+      get
+      {
+        return _metadata;
+      }
+    }
+
+    public virtual string ModelName
+    {
+      get
+      {
+        if (_model_name == null)
+          _model_name = this.GetType().Name.ToLower();
+        return _model_name;
+      }
+    }
+
+    private string MetaUrl
+    {
+      get
+      {
+        return "metadata/" + ModelName + "/" + _id.ToString();
+      }
+    }
+
+    protected virtual void LoadMetadata()
+    {
+      _metadata = JObject.Parse(_http.GET(MetaUrl));
+    }
+
+    public virtual bool DeleteMetadata()
+    {
+      return JsonConvert.DeserializeObject<bool>(_http.DELETE(MetaUrl));
+    }
+
+    public virtual bool UpdateMetadata(Parameters pars)
+    {
+      return JsonConvert.DeserializeObject<bool>(_http.PUT(MetaUrl, pars));
+    }
+
+    public virtual T Value<T>(string name)
+    {
+      if (_metadata == null)
+        LoadMetadata();
+      return _metadata.Value<T>(name);
+    }
+  }
+
+  public class User : Metadatable
+  {
     private string _name = null;
 
     public User(HTTP http, int id, string name)
@@ -117,10 +171,8 @@ namespace fag.api.types
     }
   }
 
-  public class Drop
+  public class Drop : Metadatable
   {
-    private HTTP _http = null;
-    private int _id = 0;
     private User _author = null;
     private string _content = null;
     private DateTime _created_at;
@@ -286,10 +338,8 @@ namespace fag.api.types
     }
   }
 
-  public class Flow
+  public class Flow : Metadatable
   {
-    private HTTP _http = null;
-    private int _id = 0;
     private string _title = null;
     private string[] _tags = null;
     private User _author = null;
