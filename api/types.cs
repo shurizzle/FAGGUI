@@ -196,7 +196,7 @@ namespace fag.api.types
       _updated_at = updated_at;
     }
 
-    private void populate()
+    public void Populate()
     {
       JObject o = JObject.Parse(_http.GET("drops/" + _id.ToString()));
       _author = User.from_json(_http, (JObject)o["author"]);
@@ -218,7 +218,7 @@ namespace fag.api.types
       get
       {
         if (_author == null)
-          populate();
+          Populate();
         return _author;
       }
     }
@@ -228,7 +228,7 @@ namespace fag.api.types
       get
       {
         if (_content == null)
-          populate();
+          Populate();
         return _content;
       }
     }
@@ -238,7 +238,7 @@ namespace fag.api.types
       get
       {
         if (_created_at == null)
-          populate();
+          Populate();
         return _created_at;
       }
     }
@@ -248,7 +248,7 @@ namespace fag.api.types
       get
       {
         if (_updated_at == null)
-          populate();
+          Populate();
         return _updated_at;
       }
     }

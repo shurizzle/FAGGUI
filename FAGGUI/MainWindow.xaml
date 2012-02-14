@@ -15,7 +15,8 @@
     <!--<Button Content="POPPE" Width="94" />-->
 		<TextBox Name="expressionBox" Height="20" TextWrapping="Wrap" Text="*" VerticalAlignment="Top" DockPanel.Dock="Top" PreviewKeyUp="expressionBox_PreviewKeyUp" Background="White" Foreground="Black" />
     <ScrollViewer Name="scrollViewer1" DockPanel.Dock="Left" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MinHeight="250" MinWidth="350" Foreground="Black" Background="White">
-      <StackPanel Name="contentPanel" CanVerticallyScroll="True" CanHorizontallyScroll="False" IsItemsHost="False" IsManipulationEnabled="True" Background="White"></StackPanel>
+      <StackPanel Name="contentPanel" CanVerticallyScroll="True" CanHorizontallyScroll="False" IsItemsHost="False" IsManipulationEnabled="True" Background="White">
+      </StackPanel>
     </ScrollViewer>
   </DockPanel>
 </Window>

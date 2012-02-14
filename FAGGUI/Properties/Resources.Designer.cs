@@ -60,9 +60,9 @@ namespace FAGGUI.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap LoaderImage {
+        internal static System.Drawing.Bitmap ajax_loader {
             get {
-                object obj = ResourceManager.GetObject("LoaderImage", resourceCulture);
+                object obj = ResourceManager.GetObject("ajax_loader", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
